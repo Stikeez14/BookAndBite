@@ -1,5 +1,5 @@
 specVersion: "v1beta"
-serviceId: "BookAndBite"
+serviceId: "bookandbite"
 location: "us-central1"
 schema:
   source: "./schema"
@@ -7,6 +7,6 @@ schema:
     postgresql:
       database: "fdcdb"
       cloudSql:
-        instanceId: "BookAndBite-fdc"
+        instanceId: "bookandbite-fdc"
       # schemaValidation: "COMPATIBLE"
 connectorDirs: ["./connector"]

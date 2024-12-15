@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "BookAndBite": {
+    "bookandbite": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "BookAndBite:build:production"
+              "buildTarget": "bookandbite:build:production"
             },
             "development": {
-              "buildTarget": "BookAndBite:build:development"
+              "buildTarget": "bookandbite:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,5 +92,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "d266b897-57a1-4a7b-a1c5-efad89a9c873"
   }
 }
