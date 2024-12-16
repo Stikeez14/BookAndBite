@@ -1,7 +1,47 @@
-<form (submit)="onLogin($event)">
-  <label for="email">Email:</label>
-  <input type="email" id="email" name="email" required>
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required>
-  <button type="submit">Login</button>
-</form>
+<div class="container">
+  <h1>Firebase Authentication</h1>
+
+  <!-- Register Form -->
+  <form (submit)="onRegister($event)" class="auth-form">
+    <h2>Register</h2>
+    <label for="register-email">Email:</label>
+    <input type="email" id="register-email" required placeholder="Enter your email">
+
+    <label for="register-password">Password:</label>
+    <input type="password" id="register-password" required placeholder="Enter your password">
+
+    <button type="submit">Register</button>
+  </form>
+
+  <!-- Display success or error message for registration -->
+  <div *ngIf="registrationMessage" class="message">
+    {{ registrationMessage }}
+  </div>
+
+  <hr>
+
+  <!-- Login Form -->
+  <form (submit)="onLogin($event)" class="auth-form">
+    <h2>Login</h2>
+    <label for="email">Email:</label>
+    <input type="email" id="email" required placeholder="Enter your email">
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" required placeholder="Enter your password">
+
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Display login messages -->
+  <div *ngIf="loginSuccessMessage" class="message success">
+    {{ loginSuccessMessage }}
+  </div>
+  <div *ngIf="loginErrorMessage" class="message error">
+    {{ loginErrorMessage }}
+  </div>
+
+  <!-- Logout Section -->
+  <div *ngIf="auth?.currentUser" class="logout-section">
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
