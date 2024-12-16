@@ -1,0 +1,195 @@
+/* General Container */
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f3f1;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Section */
+.profile-section {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 15px;
+}
+
+.profile-section h2 {
+  color: #333;
+  font-size: 24px;
+}
+
+.username {
+  color: #ff5b5b;
+}
+
+.email {
+  color: #777;
+  font-size: 14px;
+}
+
+.logout-btn {
+  background-color: #ff5b5b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.logout-btn:hover {
+  background-color: #ff3e3e;
+}
+
+/* Search Section */
+.search-section {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.search-section h3 {
+  font-size: 22px;
+  color: #333;
+}
+
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.search-bar {
+  padding: 12px;
+  width: 60%;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.search-btn {
+  background-color: #ff5b5b;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-btn:hover {
+  background-color: #ff3e3e;
+}
+
+/* Restaurants List */
+.restaurants-list {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restaurants-list h3 {
+  font-size: 22px;
+  color: #333;
+}
+
+.restaurant-item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-item h4 {
+  font-size: 18px;
+  color: #333;
+}
+
+.restaurant-item p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Map Section */
+.map-section {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.map-placeholder img {
+  width: 100%;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-top: 10px;
+}
+
+/* Book Reservation Section */
+.reserve-book-section {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reserve-book-section h3 {
+  font-size: 22px;
+  color: #333;
+}
+
+.book-reservation-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.input-field {
+  padding: 10px;
+  margin-bottom: 15px;
+  width: 80%;
+  max-width: 300px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.reserve-btn {
+  background-color: #ffc107;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.reserve-btn:hover {
+  background-color: #e0a800;
+}
+

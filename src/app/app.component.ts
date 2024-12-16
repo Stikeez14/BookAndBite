@@ -10,7 +10,7 @@ import {firebaseConfig} from '../environments/firebase-config';
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 
 
 @Component({
@@ -18,7 +18,7 @@ import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/route
   standalone: true, // Important for standalone components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [CommonModule, RouterOutlet, RouterLinkActive, RouterLink] // Import CommonModule to enable *ngIf and other directives
+  imports: [CommonModule, RouterOutlet] // Import CommonModule to enable *ngIf and other directives
 })
 
 export class AppComponent {
@@ -28,7 +28,6 @@ export class AppComponent {
   loginErrorMessage: string | null = null; // Holds the error message
   loginSuccessMessage: string | null = null; // Holds the success message
   isRegistering: boolean = false;
-
 
   constructor(private router: Router) {
     const app = initializeApp(firebaseConfig);
@@ -41,8 +40,8 @@ export class AppComponent {
     return signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
         this.loginErrorMessage = null; // Clear any previous error message
-        this.loginSuccessMessage = 'Correct login information!';
-        this.router.navigate(['/home']);// Set success message
+        this.loginSuccessMessage = 'Correct login information!'; // Set success message
+        this.router.navigate(['/home']);
       })
       .catch(error => {
         this.loginErrorMessage = 'Incorrect email or password';
@@ -56,6 +55,7 @@ export class AppComponent {
     return signOut(this.auth)
       .then(() => {
         console.log('User logged out');
+        this.router.navigate(['/']);
       })
       .catch(error => {
         console.error('Error logging out:', error);
@@ -124,6 +124,7 @@ export class AppComponent {
   ngOnInit(): void {
     this.authStateObserver();
   }
+
 
   toggleForm() {
     this.isRegistering = !this.isRegistering;
