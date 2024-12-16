@@ -1,38 +1,68 @@
 import { Component } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common'; // Import CommonModule for NgIf directive
-import { environment } from '../environments/firebase-config';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { firebaseConfig } from '../environments/firebase-config';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  imports: [CommonModule] // Include CommonModule in the component imports
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  errorMessage: string = '';
+  auth;
 
-  constructor(private afAuth: AngularFireAuth, private router: Router) {}
-
-  async login(email: string, password: string) {
-    try {
-      const result = await this.afAuth.signInWithEmailAndPassword(email, password);
-      this.router.navigate(['/']);  // Navigate to the desired route after successful login
-    } catch (error) {
-      this.handleError(error);  // Pass the error to the error handling function
-    }
+  constructor() {
+    const app = initializeApp(firebaseConfig);
+    this.auth = getAuth(app);
   }
 
-  private handleError(error: unknown) {
-    if (error instanceof Error) {
-      this.errorMessage = error.message;
-    } else {
-      this.errorMessage = 'An unknown error occurred. Please try again later.';
-    }
-    console.error('Login error: ', error);
+  // Method to log in with email and password
+  login(email: string, password: string): Promise<void> {
+    return signInWithEmailAndPassword(this.auth, email, password)
+      .then(() => {
+        console.log('User logged in');
+      })
+      .catch(error => {
+        console.error('Error logging in:', error);
+      });
+  }
+
+  // Method to log out
+  logout(): Promise<void> {
+    return signOut(this.auth)
+      .then(() => {
+        console.log('User logged out');
+      })
+      .catch(error => {
+        console.error('Error logging out:', error);
+      });
+  }
+
+  // Method to observe authentication state
+  authStateObserver(): void {
+    onAuthStateChanged(this.auth, user => {
+      if (user) {
+        console.log('User is logged in:', user);
+      } else {
+        console.log('User is logged out');
+      }
+    });
+  }
+
+  onLogin(event: Event): void {
+    event.preventDefault();
+    const target = event.target as HTMLFormElement;
+    const emailInput = target.querySelector<HTMLInputElement>('#email')!;
+    const passwordInput = target.querySelector<HTMLInputElement>('#password')!;
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    this.login(email, password);
+  }
+
+  ngOnInit(): void {
+    this.authStateObserver();
   }
 }
+
