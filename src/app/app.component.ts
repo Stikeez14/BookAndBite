@@ -10,6 +10,7 @@ import {firebaseConfig} from '../environments/firebase-config';
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
   standalone: true, // Important for standalone components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [CommonModule] // Import CommonModule to enable *ngIf and other directives
+  imports: [CommonModule, RouterOutlet, RouterLinkActive, RouterLink] // Import CommonModule to enable *ngIf and other directives
 })
 
 export class AppComponent {
@@ -26,8 +27,10 @@ export class AppComponent {
   registrationMessage: string | null = null; // Success/error message for registration
   loginErrorMessage: string | null = null; // Holds the error message
   loginSuccessMessage: string | null = null; // Holds the success message
+  isRegistering: boolean = false;
 
-  constructor() {
+
+  constructor(private router: Router) {
     const app = initializeApp(firebaseConfig);
     this.auth = getAuth(app);
     this.db = getFirestore(app); // Initialize Firestore
@@ -38,7 +41,8 @@ export class AppComponent {
     return signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
         this.loginErrorMessage = null; // Clear any previous error message
-        this.loginSuccessMessage = 'Correct login information!'; // Set success message
+        this.loginSuccessMessage = 'Correct login information!';
+        this.router.navigate(['/home']);// Set success message
       })
       .catch(error => {
         this.loginErrorMessage = 'Incorrect email or password';
@@ -119,5 +123,9 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.authStateObserver();
+  }
+
+  toggleForm() {
+    this.isRegistering = !this.isRegistering;
   }
 }

@@ -1,54 +1,68 @@
 <div class="container">
+  <!-- Navigation Links -->
+  <a routerLink="/">LogIn</a>
+  <a routerLink="/home">Home</a>
+
   <h1>Book & Bite</h1>
   <hr>
 
-  <!-- Register Form -->
-  <form (submit)="onRegister($event)" class="auth-form">
-    <h2>Sign-Up</h2>
-    <label for="register-email">Email:</label>
-    <input type="email" id="register-email" required placeholder="Enter your email">
+  <!-- Conditionally show Register or Login form based on the isRegistering flag -->
+  <div *ngIf="isRegistering; else loginForm">
+    <!-- Register Form -->
+    <form (submit)="onRegister($event)" class="auth-form">
+      <h2>Sign-Up</h2>
+      <label for="register-email">Email:</label>
+      <input type="email" id="register-email" required placeholder="Enter your email">
+
+      <br>
+
+      <label for="register-password">Password:</label>
+      <input type="password" id="register-password" required placeholder="Enter your password">
+
+      <br>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <!-- Display success or error message for registration -->
+    <div *ngIf="registrationMessage" class="message">
+      {{ registrationMessage }}
+    </div>
 
     <br>
-
-    <label for="register-password">Password:</label>
-    <input type="password" id="register-password" required placeholder="Enter your password">
-
-    <br>
-
-    <button type="submit">Register</button>
-  </form>
-
-  <!-- Display success or error message for registration -->
-  <div *ngIf="registrationMessage" class="message">
-    {{ registrationMessage }}
+    <hr>
+    <button (click)="toggleForm()">Already have an account? Log In</button>
   </div>
 
-  <br>
-  <hr>
+  <!-- Login Form (this will be rendered when isRegistering is false) -->
+  <ng-template #loginForm>
+    <form (submit)="onLogin($event)" class="auth-form">
+      <h2>Log-In</h2>
+      <label for="email">Email:</label>
+      <input type="email" id="email" required placeholder="Enter your email">
 
-  <!-- Login Form -->
-  <form (submit)="onLogin($event)" class="auth-form">
-    <h2>Log-In</h2>
-    <label for="email">Email:</label>
-    <input type="email" id="email" required placeholder="Enter your email">
+      <br>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" required placeholder="Enter your password">
+
+      <br>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <!-- Display login messages -->
+    <div *ngIf="loginSuccessMessage" class="message success">
+      {{ loginSuccessMessage }}
+    </div>
+    <div *ngIf="loginErrorMessage" class="message error">
+      {{ loginErrorMessage }}
+    </div>
 
     <br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" required placeholder="Enter your password">
-
-    <br>
-
-    <button type="submit">Login</button>
-  </form>
-
-  <!-- Display login messages -->
-  <div *ngIf="loginSuccessMessage" class="message success">
-    {{ loginSuccessMessage }}
-  </div>
-  <div *ngIf="loginErrorMessage" class="message error">
-    {{ loginErrorMessage }}
-  </div>
+    <hr>
+    <button (click)="toggleForm()">Don't have an account? Register</button>
+  </ng-template>
 
   <!-- Logout Section -->
   <div *ngIf="auth?.currentUser" class="logout-section">
