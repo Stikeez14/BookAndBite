@@ -30,6 +30,7 @@
       <hr>
       <button (click)="toggleForm()" class="toggle-btn">Already have an account? Log In</button>
     </div>
+
     <!-- Login Form -->
     <ng-template #loginForm>
       <form (submit)="onLogin($event)" class="auth-form">
@@ -52,16 +53,20 @@
       <br>
       <hr>
       <button (click)="toggleForm()" class="toggle-btn">Don't have an account? Register</button>
+      <br>
+      <button (click)="loginWithGoogle()" class="btn google-login-btn">
+        Login with Google
+      </button>
     </ng-template>
   </div>
 
   <!-- Logout Section (only visible when logged in) -->
   <div *ngIf="auth?.currentUser" class="logout-section">
+    <br>
     <button (click)="logout()" class="btn logout-btn">Logout</button>
   </div>
 
   <!-- Router Outlet for rendering the routed component -->
   <router-outlet name="left"></router-outlet>
   <router-outlet></router-outlet>
-
 </div>

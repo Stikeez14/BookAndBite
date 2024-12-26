@@ -3,15 +3,16 @@ import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import {firebaseConfig} from '../environments/firebase-config';
-import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { firebaseConfig } from '../environments/firebase-config';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import {Router, RouterOutlet} from '@angular/router';
-
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -47,6 +48,31 @@ export class AppComponent {
         this.loginErrorMessage = 'Incorrect email or password';
         this.loginSuccessMessage = null; // Clear the success message on failure
         console.error('Error logging in:', error);
+      });
+  }
+
+  // Method to log in with Google
+  loginWithGoogle(): Promise<void> {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(this.auth, provider)
+      .then(async (result) => {
+        const user = result.user;
+        console.log('User signed in with Google:', user);
+
+        // Save user data to Firestore if it's their first time logging in
+        const userDocRef = doc(this.db, 'users', user.uid);
+        const userData = {
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          createdAt: new Date().toISOString()
+        };
+
+        await setDoc(userDocRef, userData, { merge: true }); // Merge data if document exists
+        this.router.navigate(['/home']); // Navigate to home page
+      })
+      .catch(error => {
+        console.error('Error signing in with Google:', error);
       });
   }
 
@@ -125,8 +151,7 @@ export class AppComponent {
     this.authStateObserver();
   }
 
-
-  toggleForm() {
+  toggleForm(): void {
     this.isRegistering = !this.isRegistering;
   }
 }
