@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, doc, getDoc,setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-home',
@@ -9,73 +9,78 @@ import { getFirestore, doc, getDoc,setDoc } from 'firebase/firestore';
 })
 export class HomeComponent implements OnInit {
   username: string | null = null;
-  profilePicture: string | null = null; // To store the profile picture URL
-  selectedFile: File | null = null; // Store selected file
+  profilePicture: string | null = null;
+  selectedFile: File | null = null;
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor() {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     const auth = getAuth();
     const db = getFirestore();
 
     onAuthStateChanged(auth, async (user: User | null) => {
       if (user) {
-        // User is signed in, fetch their data from Firestore
+        // Fetch user data
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          this.username = userData['username'] || null; // Use the stored username
-          this.profilePicture = userData['profilePicture'] || null; // Use the stored profile picture
+          this.username = userData['username'] || null;
+          this.profilePicture = userData['profilePicture'] || null;
         } else {
           console.error('User document does not exist in Firestore.');
-          this.username = null;
-          this.profilePicture = null; // Clear profile picture if document doesn't exist
         }
       } else {
-        // User is not signed in
         this.username = null;
-        this.profilePicture = null; // Clear profile picture
+        this.profilePicture = null;
       }
     });
   }
+
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedFile = input.files[0];
+
+      // Create a temporary URL for preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profilePicture = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+
+      // Optionally, save the profile picture to Firestore
+      this.saveProfilePicture();
     }
   }
+
   async saveProfilePicture(): Promise<void> {
     if (!this.selectedFile) return;
 
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const db = getFirestore();
+    const userDocRef = doc(db, 'users', user.uid);
+
+    // Save the Base64 string or a link to Firestore
     const reader = new FileReader();
     reader.onload = async () => {
-      const base64String = reader.result as string; // Base64 string of the image
-      const auth = getAuth();
-      const user = auth.currentUser;
-      const db = getFirestore();
-
-      if (user) {
-        try {
-          const userDocRef = doc(db, 'users', user.uid);
-
-          // Update the user's document with the Base64 string
-          await setDoc(
-            userDocRef,
-            { profilePicture: base64String },
-            { merge: true }
-          );
-
-          console.log('Profile picture saved successfully!');
-          this.profilePicture = base64String; // Update UI
-          this.selectedFile = null; // Clear the selected file
-        } catch (error) {
-          console.error('Error saving profile picture:', error);
-        }
+      try {
+        await setDoc(userDocRef, { profilePicture: reader.result }, { merge: true });
+        console.log('Profile picture updated!');
+      } catch (error) {
+        console.error('Error updating profile picture:', error);
       }
     };
-
-    reader.readAsDataURL(this.selectedFile); // Read the file as a Base64 string
+    reader.readAsDataURL(this.selectedFile);
   }
 }

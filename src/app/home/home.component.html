@@ -1,14 +1,15 @@
 <div class="home-container">
   <!-- Profile Section -->
   <div class="profile-section">
-    <img [src]="profilePicture || 'https://via.placeholder.com/150'" alt="User Profile" class="profile-image">
+    <div class="profile-image-container">
+      <img [src]="profilePicture || 'https://via.placeholder.com/150'" alt="User Profile" class="profile-image">
+      <button class="change-picture-btn" (click)="triggerFileInput()">Change Picture</button>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput style="display: none;">
+    </div>
     <h2>Welcome, <span class="username">{{ username ? username : 'Guest' }}</span></h2>
-
-    <input type="file" accept="image/*" (change)="onFileSelected($event)">
-    <button (click)="saveProfilePicture()" [disabled]="!selectedFile">Modify Profile Pic</button>
     <p class="message">
-    {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}
-  </p>
+      {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}
+    </p>
   </div>
   <!-- Search Section -->
   <div class="search-section">
