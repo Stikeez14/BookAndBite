@@ -1,7 +1,7 @@
 <div class="home-container">
   <!-- Profile Section -->
   <div class="profile-section">
-    <img src="https://via.placeholder.com/150" alt="User Profile" class="profile-image">
+    <img [src]="profilePicture || 'https://via.placeholder.com/150'" alt="User Profile" class="profile-image">
     <h2>Welcome, <span class="username">{{ username ? username : 'Guest' }}</span></h2>
     <p class="message">
       {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}

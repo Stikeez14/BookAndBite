@@ -135,7 +135,7 @@ export class AppComponent {
         const user = userCredential.user;
         console.log('User registered:', user);
 
-        const defaultProfilePicture = 'https://www.example.com/default-profile-picture.png';
+        const defaultProfilePicture = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhollywoodzam.com%2Fwp-content%2Fuploads%2F2021%2F12%2FJohnny-Sins.jpg&f=1&nofb=1&ipt=512768ae6c33f322f62da54010ec2ebf5118b334bfb04c2ae675b9a069881d11&ipo=images';
 
         // Save user data to Firestore
         return setDoc(doc(this.db, 'users', user.uid), {
