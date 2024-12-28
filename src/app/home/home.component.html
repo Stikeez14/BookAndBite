@@ -11,6 +11,7 @@
       {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}
     </p>
   </div>
+
   <!-- Search Section -->
   <div class="search-section">
     <h3>Search for Restaurants</h3>
@@ -24,17 +25,15 @@
   <div class="restaurants-list">
     <h3>Restaurant Suggestions</h3>
     <ul>
-      <li class="restaurant-item">
-        <h4>Pizza Place</h4>
-        <p>Delicious pizza with a crispy crust!</p>
+      <!-- If no restaurants, display a message -->
+      <li *ngIf="restaurants.length === 0" class="no-restaurants">
+        No restaurants available.
       </li>
-      <li class="restaurant-item">
-        <h4>Burger Joint</h4>
-        <p>Juicy burgers with fresh toppings!</p>
-      </li>
-      <li class="restaurant-item">
-        <h4>Sushi Spot</h4>
-        <p>Fresh sushi made to order!</p>
+      <!-- Loop through restaurants and display each one -->
+      <li *ngFor="let restaurant of restaurants" class="restaurant-item">
+        <h4>{{ restaurant.name }}</h4>
+        <p>{{ restaurant.description }}</p>
+        <img [src]="restaurant.profilePicture" alt="Restaurant Image" class="restaurant-image">
       </li>
     </ul>
   </div>
