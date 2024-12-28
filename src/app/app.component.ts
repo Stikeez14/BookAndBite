@@ -135,17 +135,24 @@ export class AppComponent {
         return setDoc(doc(this.db, 'users', user.uid), {
           email: user.email,
           createdAt: new Date().toISOString()
+        }).then(() => {
+          // Sign out the user after registration to avoid them being considered authenticated
+          return this.auth.signOut();
         });
       })
       .then(() => {
-        this.registrationMessage = 'Account successfully created and stored in the database!';
-        console.log('User data successfully saved to Firestore.');
+        this.registrationMessage = 'Account successfully created! Please log in.';
+        console.log('User data saved to Firestore and user signed out.');
+
+        // Redirect to login page
+        this.router.navigate(['/login']); // Adjust route as needed
       })
       .catch(error => {
         this.registrationMessage = `Error: ${error.message}`;
         console.error('Error registering user or saving data:', error);
       });
   }
+
 
   ngOnInit(): void {
     this.authStateObserver();
