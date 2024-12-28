@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { CommonModule } from '@angular/common'; // Add this import
 
 @Component({
@@ -10,11 +10,12 @@ import { CommonModule } from '@angular/common'; // Add this import
   styleUrls: ['./home.component.css'],
   imports: [CommonModule] // Add CommonModule to imports
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   username: string | null = null;
   profilePicture: string | null = null;
   selectedFile: File | null = null;
   restaurants: any[] = [];  // Holds the list of restaurants
+  unsubscribe: () => void = () => {};  // Holds the unsubscribe function
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -39,8 +40,8 @@ export class HomeComponent implements OnInit {
           console.error('User document does not exist in Firestore.');
         }
 
-        // Fetch restaurants from Firestore
-        this.fetchRestaurants();
+        // Fetch restaurants in real-time
+        this.fetchRestaurantsRealTime();
       } else {
         this.username = null;
         this.profilePicture = null;
@@ -48,38 +49,41 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Fetch restaurants from Firestore
-  async fetchRestaurants(): Promise<void> {
+  // Fetch restaurants from Firestore in real-time
+  fetchRestaurantsRealTime(): void {
     const db = getFirestore();
     const restaurantsRef = collection(db, 'users');
-    const querySnapshot = await getDocs(restaurantsRef);
 
-    console.log("Fetched documents count:", querySnapshot.size); // Log the number of documents fetched
+    // Listen to real-time updates from Firestore
+    this.unsubscribe = onSnapshot(restaurantsRef, (querySnapshot) => {
+      console.log("Fetched documents count:", querySnapshot.size); // Log the number of documents fetched
 
-    this.restaurants = [];  // Clear previous data
+      this.restaurants = [];  // Clear previous data
 
-    // Iterate through each document in Firestore
-    querySnapshot.forEach((doc) => {
-      const userData = doc.data();
-      console.log("Document data for restaurant:", userData);  // Log the document data
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        console.log("Document data for restaurant:", userData);  // Log the document data
 
-      // Only add restaurants to the list where profileType is 'Restaurant'
-      if (userData['profileType'] === 'Restaurant') {
-        this.restaurants.push({
-          name: userData['username'],
-          description: userData['address'] || 'No description available.',
-          profilePicture: userData['profilePicture'] || 'https://via.placeholder.com/150'
-        });
-      }
+        // Only add restaurants to the list where profileType is 'Restaurant'
+        if (userData['profileType'] === 'Restaurant') {
+          this.restaurants.push({
+            name: userData['username'],
+            description: userData['address'] || 'No description available.',
+            profilePicture: userData['profilePicture'] || 'https://via.placeholder.com/150'
+          });
+        }
+      });
+
+      console.log("Filtered restaurant data:", this.restaurants);  // Log the filtered restaurants list
     });
-
-    console.log("Filtered restaurant data:", this.restaurants);  // Log the filtered restaurants list
   }
 
+  // Trigger the file input for uploading a new profile picture
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
 
+  // Handle file selection for profile picture
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -97,6 +101,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  // Save the selected profile picture to Firestore
   async saveProfilePicture(): Promise<void> {
     if (!this.selectedFile) return;
 
@@ -118,5 +123,10 @@ export class HomeComponent implements OnInit {
       }
     };
     reader.readAsDataURL(this.selectedFile);
+  }
+
+  // Unsubscribe from real-time updates when the component is destroyed
+  ngOnDestroy(): void {
+    this.unsubscribe();  // Unsubscribe from real-time updates
   }
 }
