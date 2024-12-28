@@ -2,8 +2,8 @@
   <!-- Profile Section -->
   <div class="profile-section">
     <img src="https://via.placeholder.com/150" alt="User Profile" class="profile-image">
-    <h2>Welcome, <span class="username">John Doe</span></h2>
-    <p class="email">"I love to eat"</p>
+    <h2>Welcome, <span class="username">{{ username ? username : 'Guest' }}</span></h2>
+    <p class="email">{{ userEmail ? "We're glad you're here!" : "Please log in to access personalized features." }}</p>
   </div>
 
   <!-- Search Section -->
