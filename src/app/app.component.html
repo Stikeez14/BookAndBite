@@ -7,25 +7,43 @@
   <h1>Book & Bite</h1>
   <hr>
 
-  <!-- Only show the login/register forms if the user is not logged in -->
   <div *ngIf="!auth?.currentUser" class="auth-container">
-    <!-- Conditionally show Register or Login form based on the isRegistering flag -->
     <div *ngIf="isRegistering; else loginForm">
-      <!-- Register Form -->
       <form (submit)="onRegister($event)" class="auth-form">
         <h2>Sign-Up</h2>
+
+        <!-- Profile Type Selection -->
+        <div class="profile-type-container" (click)="toggleProfileType($event)">
+          <div class="profile-type-half customer" [class.selected]="selectedProfileType === 'Customer'">
+            Customer
+          </div>
+          <div class="profile-type-half restaurant" [class.selected]="selectedProfileType === 'Restaurant'">
+            Restaurant
+          </div>
+        </div>
+
         <label for="register-username">Username:</label>
         <input type="text" id="register-username" required placeholder="Choose a username">
         <br>
+
         <label for="register-email">Email:</label>
         <input type="email" id="register-email" required placeholder="Enter your email">
         <br>
+
         <label for="register-password">Password:</label>
         <input type="password" id="register-password" required placeholder="Enter your password">
         <br>
+
+        <!-- Conditional Address Field for Restaurants -->
+        <div class="restaurant-field" *ngIf="selectedProfileType === 'Restaurant'">
+          <label for="register-address">Address:</label>
+          <input type="text" id="register-address" required placeholder="Enter your address">
+          <br>
+        </div>
+
         <button type="submit" class="btn">Register</button>
       </form>
-      <!-- Display success or error message for registration -->
+
       <div *ngIf="registrationMessage" class="message">
         {{ registrationMessage }}
       </div>
@@ -34,7 +52,6 @@
       <button (click)="toggleForm()" class="toggle-btn">Already have an account? Log In</button>
     </div>
 
-    <!-- Login Form -->
     <ng-template #loginForm>
       <form (submit)="onLogin($event)" class="auth-form">
         <h2>Log-In</h2>
@@ -46,7 +63,7 @@
         <br>
         <button type="submit" class="btn">Login</button>
       </form>
-      <!-- Display login messages -->
+
       <div *ngIf="loginSuccessMessage" class="message success">
         {{ loginSuccessMessage }}
       </div>
@@ -63,13 +80,10 @@
     </ng-template>
   </div>
 
-  <!-- Logout Section (only visible when logged in) -->
   <div *ngIf="auth?.currentUser" class="logout-section">
     <br>
     <button (click)="logout()" class="btn logout-btn">Logout</button>
   </div>
 
-  <!-- Router Outlet for rendering the routed component -->
-  <router-outlet name="left"></router-outlet>
   <router-outlet></router-outlet>
 </div>

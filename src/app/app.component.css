@@ -138,3 +138,49 @@ hr {
 .logout-btn:hover {
   background-color: #c82333;
 }
+
+/* Profile Type Selection Styling */
+.profile-type-container {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.profile-type-half {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.profile-type-half.customer {
+  background-color: #28a745; /* Green for Customer */
+}
+
+.profile-type-half.restaurant {
+  background-color: #ffc107; /* Yellow for Restaurant */
+}
+
+.profile-type-half:hover {
+  opacity: 0.8;
+}
+
+.profile-type-half.selected {
+  border: 2px solid #333; /* Highlight the selected half */
+}
+
+.auth-form .optional-field {
+  display: none; /* Hide optional address field by default */
+}
+
+.auth-form .restaurant-field {
+  display: block; /* Show restaurant address field when selected */
+}
