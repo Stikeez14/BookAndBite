@@ -117,23 +117,31 @@ export class AppComponent {
     const target = event.target as HTMLFormElement;
     const emailInput = target.querySelector<HTMLInputElement>('#register-email')!;
     const passwordInput = target.querySelector<HTMLInputElement>('#register-password')!;
+    const usernameInput = target.querySelector<HTMLInputElement>('#register-username')!;
 
     const email = emailInput.value;
     const password = passwordInput.value;
+    const username = usernameInput.value; //error here this is being null
 
-    this.register(email, password);
+    console.log('Registering with:', { email, username, password });
+
+    this.register(email, password,username);
   }
 
   // Method to register a new user
-  register(email: string, password: string): Promise<void> {
+  register(email: string, password: string, username: string): Promise<void> {
     return createUserWithEmailAndPassword(this.auth, email, password)
       .then(userCredential => {
         const user = userCredential.user;
         console.log('User registered:', user);
 
+        const defaultProfilePicture = 'https://www.example.com/default-profile-picture.png';
+
         // Save user data to Firestore
         return setDoc(doc(this.db, 'users', user.uid), {
           email: user.email,
+          username: username,
+          profilePicture: defaultProfilePicture,
           createdAt: new Date().toISOString()
         }).then(() => {
           // Sign out the user after registration to avoid them being considered authenticated

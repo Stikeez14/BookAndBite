@@ -3,7 +3,9 @@
   <div class="profile-section">
     <img src="https://via.placeholder.com/150" alt="User Profile" class="profile-image">
     <h2>Welcome, <span class="username">{{ username ? username : 'Guest' }}</span></h2>
-    <p class="email">{{ userEmail ? "We're glad you're here!" : "Please log in to access personalized features." }}</p>
+    <p class="message">
+      {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}
+    </p>
   </div>
 
   <!-- Search Section -->
@@ -15,7 +17,7 @@
     </div>
   </div>
 
-  <!-- Restaurants List (Static placeholder) -->
+  <!-- Restaurants List -->
   <div class="restaurants-list">
     <h3>Restaurant Suggestions</h3>
     <ul>
@@ -34,7 +36,7 @@
     </ul>
   </div>
 
-  <!-- Map Section (Static placeholder) -->
+  <!-- Map Section -->
   <div class="map-section">
     <h3>Find Us on the Map</h3>
     <div class="map-placeholder">
