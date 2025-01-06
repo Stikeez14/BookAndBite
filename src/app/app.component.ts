@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { Router, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { SearchComponent } from './search/search.component';
 
 @Component({
   selector: 'app-root',

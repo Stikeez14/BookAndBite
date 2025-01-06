@@ -16,8 +16,14 @@
   <div class="search-section">
     <h3>Search for Restaurants</h3>
     <div class="search-bar-container">
-      <input type="text" placeholder="Type your search here..." class="search-bar">
-      <button class="search-btn">Search</button>
+      <input
+        type="text"
+        placeholder="Type your search here..."
+        class="search-bar"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+      />
+      <button class="search-btn" (click)="onSearch()">Search</button>
     </div>
   </div>
 
@@ -26,11 +32,11 @@
     <h3>Restaurant Suggestions</h3>
     <ul>
       <!-- If no restaurants, display a message -->
-      <li *ngIf="restaurants.length === 0" class="no-restaurants">
+      <li *ngIf="filteredRestaurants.length === 0" class="no-restaurants">
         No restaurants available.
       </li>
-      <!-- Loop through restaurants and display each one -->
-      <li *ngFor="let restaurant of restaurants" class="restaurant-item">
+      <!-- Loop through filtered restaurants and display each one -->
+      <li *ngFor="let restaurant of filteredRestaurants" class="restaurant-item">
         <h4>{{ restaurant.name }}</h4>
         <p>{{ restaurant.description }}</p>
         <img [src]="restaurant.profilePicture" alt="Restaurant Image" class="restaurant-image">

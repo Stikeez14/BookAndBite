@@ -2,24 +2,29 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { CommonModule } from '@angular/common'; // Add this import
+import { FirebaseService } from '../firebase.service'; // Import FirebaseService
+import { SearchComponent } from '../search/search.component';
+import {FormsModule} from '@angular/forms'; // Import SearchComponent
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   standalone: true,
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule] // Add CommonModule to imports
+  imports: [CommonModule, SearchComponent, FormsModule] // Add SearchComponent to imports
 })
 export class HomeComponent implements OnInit, OnDestroy {
   username: string | null = null;
   profilePicture: string | null = null;
   selectedFile: File | null = null;
   restaurants: any[] = [];  // Holds the list of restaurants
+  filteredRestaurants: any[] = []; // Holds the filtered list based on search
+  searchQuery: string = ''; // Holds the search query
   unsubscribe: () => void = () => {};  // Holds the unsubscribe function
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  constructor() {}
+  constructor(private firebaseService: FirebaseService) {}
 
   ngOnInit(): void {
     const auth = getAuth();
@@ -67,6 +72,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         // Only add restaurants to the list where profileType is 'Restaurant'
         if (userData['profileType'] === 'Restaurant') {
           this.restaurants.push({
+            id: doc.id,
             name: userData['username'],
             description: userData['address'] || 'No description available.',
             profilePicture: userData['profilePicture'] || 'https://via.placeholder.com/150'
@@ -75,6 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
 
       console.log("Filtered restaurant data:", this.restaurants);  // Log the filtered restaurants list
+      this.filteredRestaurants = [...this.restaurants];  // Initialize filtered restaurants
     });
   }
 
@@ -128,5 +135,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Unsubscribe from real-time updates when the component is destroyed
   ngOnDestroy(): void {
     this.unsubscribe();  // Unsubscribe from real-time updates
+  }
+
+  // Search functionality to filter restaurants based on user input
+  onSearch(): void {
+    if (this.searchQuery.trim()) {
+      this.filteredRestaurants = this.restaurants.filter(restaurant =>
+        restaurant.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        restaurant.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      this.filteredRestaurants = [...this.restaurants]; // If no search query, show all restaurants
+    }
   }
 }

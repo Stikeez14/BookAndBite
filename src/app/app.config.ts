@@ -4,6 +4,7 @@ import { routes } from './app.routes'; // Import routes
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { firebaseConfig } from '../environments/firebase-config';
+import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 
 export const appConfig: ApplicationConfig = {
   providers: [
