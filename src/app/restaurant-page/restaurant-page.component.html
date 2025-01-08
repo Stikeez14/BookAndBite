@@ -6,8 +6,8 @@
   </div>
 
   <!-- Restaurant Details -->
-  <div class="restaurant-adres">
-    <h2>Adress</h2>
+  <div class="restaurant-address">
+    <h2>Address</h2>
     <p>{{ restaurant?.address || 'Details about the restaurant will be displayed here.' }}</p>
   </div>
 
@@ -15,7 +15,6 @@
   <div class="restaurant-menu">
     <h2>Menu</h2>
     <ul>
-      <!-- Example placeholder items -->
       <li *ngIf="!restaurant?.menu">No menu available. Stay tuned!</li>
       <li *ngFor="let item of restaurant?.menu">
         <h3>{{ item.name }}</h3>
@@ -28,7 +27,6 @@
   <div class="restaurant-reviews">
     <h2>Customer Reviews</h2>
     <ul>
-      <!-- Example placeholder reviews -->
       <li *ngIf="!restaurant?.reviews">No reviews yet. Be the first to leave one!</li>
       <li *ngFor="let review of restaurant?.reviews">
         <p><strong>{{ review.username }}</strong>:</p>
@@ -42,6 +40,45 @@
     <h2>Find Us</h2>
     <div class="map-placeholder">
       <p *ngIf="!restaurant?.location">Location information is not available.</p>
+    </div>
+  </div>
+
+  <!-- Reserve Table Section -->
+  <div class="reserve-table-section">
+    <h3>Reserve a Table</h3>
+    <!-- Reservation Form -->
+    <div class="reservation-form">
+      <label for="reservation-date">Select a Date:</label>
+      <input
+        type="date"
+        id="reservation-date"
+        [(ngModel)]="selectedReservationDate"
+        (change)="generateTimeIntervals()"
+        class="reservation-date-picker"
+      />
+
+      <div *ngIf="selectedReservationDate" class="time-intervals">
+        <h5>Select a Time Interval:</h5>
+        <div class="time-interval-container">
+          <div
+            *ngFor="let interval of timeIntervals"
+            class="time-interval"
+            [class.selected]="interval === selectedTimeInterval"
+            [class.unavailable]="!interval.available"
+            (click)="selectTimeInterval(interval)"
+          >
+            {{ interval.start }} - {{ interval.end }}
+          </div>
+        </div>
+      </div>
+
+      <button
+        [disabled]="!selectedTimeInterval"
+        (click)="reserveTable()"
+        class="reservation-btn"
+      >
+        Confirm Reservation
+      </button>
     </div>
   </div>
 </div>
