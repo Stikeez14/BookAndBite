@@ -1,0 +1,23 @@
+/* home.component.css */
+.restaurant-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.restaurant-link:hover {
+  color: #007bff;
+}
+
+/* restaurant-page.component.css */
+.restaurant-details {
+  text-align: center;
+}
+.restaurant-image {
+  width: 300px;
+  height: auto;
+  margin: 20px 0;
+}
+.loading {
+  text-align: center;
+  font-size: 18px;
+}

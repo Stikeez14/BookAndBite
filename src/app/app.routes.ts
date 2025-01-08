@@ -1,11 +1,12 @@
-import { Routes } from '@angular/router';
-import { AppComponent } from './app.component'; // The login page
-import { HomeComponent } from './home/home.component'; // The home page
-import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
+import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component'; // Login page
+import { HomeComponent } from './home/home.component'; // Home page
+import { RestaurantPageComponent } from './restaurant-page/restaurant-page.component'; // Restaurant details page
 
 export const routes: Routes = [
   { path: 'app', component: AppComponent },  // Login route
-  { path: 'home', component: HomeComponent },
-  { path: '**', redirectTo: '' }// Home page route after login
+  { path: 'home', component: HomeComponent }, // Home route
+  { path: 'restaurant/:id', component: RestaurantPageComponent }, // Restaurant page route
+  { path: ' ', redirectTo: 'home' } // Wildcard route as the last entry
 ];
 
