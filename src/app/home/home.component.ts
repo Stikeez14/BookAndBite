@@ -3,7 +3,6 @@ import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { CommonModule } from '@angular/common'; // Add this import
 import { FirebaseService } from '../firebase.service'; // Import FirebaseService
-import { SearchComponent } from '../search/search.component';
 import {FormsModule} from '@angular/forms'; // Import SearchComponent
 
 @Component({
@@ -11,7 +10,7 @@ import {FormsModule} from '@angular/forms'; // Import SearchComponent
   templateUrl: './home.component.html',
   standalone: true,
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule, SearchComponent, FormsModule] // Add SearchComponent to imports
+  imports: [CommonModule, FormsModule] // Add SearchComponent to imports
 })
 export class HomeComponent implements OnInit, OnDestroy {
   username: string | null = null;
