@@ -1,0 +1,8 @@
+<div class="modal-overlay" *ngIf="restaurant">
+  <div class="modal">
+    <h2>{{ restaurant.name }}</h2>
+    <p>{{ restaurant.description }}</p>
+    <img [src]="restaurant.profilePicture" alt="Restaurant Image" class="restaurant-image">
+    <button (click)="closeModal()">Close</button>
+  </div>
+</div>

@@ -53,15 +53,63 @@
     </div>
   </div>
 
-  <!-- Book Reservation Section -->
-  <div class="reserve-book-section">
-    <h3>Reserve a Book</h3>
-    <div class="book-reservation-form">
-      <label for="book-title">Book Title:</label>
-      <input type="text" id="book-title" placeholder="Enter book title" class="input-field">
-      <label for="reservation-date">Reservation Date:</label>
-      <input type="date" id="reservation-date" class="input-field">
-      <button class="reserve-btn">Reserve</button>
+  <!-- Reserve Table Section -->
+  <div class="reserve-table-section">
+    <h3>Reserve a Table</h3>
+    <div class="reservation-search">
+      <input
+        type="text"
+        placeholder="Search for a restaurant..."
+        class="reservation-search-bar"
+        [(ngModel)]="reservationQuery"
+        (input)="filterReservationRestaurants()"
+      />
+      <ul *ngIf="filteredReservationRestaurants.length > 0" class="reservation-dropdown">
+        <li
+          *ngFor="let restaurant of filteredReservationRestaurants"
+          (click)="selectRestaurantForReservation(restaurant)"
+          class="reservation-item"
+        >
+          {{ restaurant.name }}
+        </li>
+      </ul>
+      <p *ngIf="filteredReservationRestaurants.length === 0 && reservationQuery.trim()">No restaurants found.</p>
+    </div>
+
+    <!-- Reservation Form -->
+    <div *ngIf="selectedRestaurantForReservation" class="reservation-form">
+      <h4>Reserving a table at {{ selectedRestaurantForReservation.name }}</h4>
+      <label for="reservation-date">Select a Date:</label>
+      <input
+        type="date"
+        id="reservation-date"
+        [(ngModel)]="selectedReservationDate"
+        (change)="generateTimeIntervals()"
+        class="reservation-date-picker"
+      />
+
+      <div *ngIf="selectedReservationDate" class="time-intervals">
+        <h5>Select a Time Interval:</h5>
+        <div class="time-interval-container">
+          <div
+            *ngFor="let interval of timeIntervals"
+            class="time-interval"
+            [class.selected]="interval === selectedTimeInterval"
+            [class.unavailable]="!interval.available"
+            (click)="selectTimeInterval(interval)"
+          >
+            {{ interval.start }} - {{ interval.end }}
+          </div>
+        </div>
+      </div>
+
+      <button
+        [disabled]="!selectedTimeInterval"
+        (click)="reserveTable()"
+        class="reservation-btn"
+      >
+        Confirm Reservation
+      </button>
     </div>
   </div>
 </div>
