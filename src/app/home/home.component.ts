@@ -1,25 +1,27 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
-import { CommonModule } from '@angular/common'; // Add this import
-import { FirebaseService } from '../firebase.service'; // Import FirebaseService
-import {FormsModule} from '@angular/forms'; // Import SearchComponent
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
+import {collection, doc, getDoc, getFirestore, onSnapshot, setDoc} from 'firebase/firestore';
+import {CommonModule} from '@angular/common';
+import {FirebaseService} from '../firebase.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   standalone: true,
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule, FormsModule] // Add SearchComponent to imports
+  imports: [CommonModule, FormsModule]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   username: string | null = null;
   profilePicture: string | null = null;
   selectedFile: File | null = null;
-  restaurants: any[] = [];  // Holds the list of restaurants
-  filteredRestaurants: any[] = []; // Holds the filtered list based on search
-  searchQuery: string = ''; // Holds the search query
-  unsubscribe: () => void = () => {};  // Holds the unsubscribe function
+  restaurants: any[] = [];
+  filteredRestaurants: any[] = [];
+  searchQuery: string = '';
+  unsubscribe: () => void = () => {};
+  currentIndex: number = 0;
+  intervalId: any;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -29,10 +31,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     const auth = getAuth();
     const db = getFirestore();
 
-    // Watch for authentication state changes
     onAuthStateChanged(auth, async (user: User | null) => {
       if (user) {
-        // Fetch user data
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
@@ -44,31 +44,26 @@ export class HomeComponent implements OnInit, OnDestroy {
           console.error('User document does not exist in Firestore.');
         }
 
-        // Fetch restaurants in real-time
         this.fetchRestaurantsRealTime();
       } else {
         this.username = null;
         this.profilePicture = null;
       }
     });
+
+    this.startRestaurantRotation();
   }
 
-  // Fetch restaurants from Firestore in real-time
   fetchRestaurantsRealTime(): void {
     const db = getFirestore();
     const restaurantsRef = collection(db, 'users');
 
-    // Listen to real-time updates from Firestore
     this.unsubscribe = onSnapshot(restaurantsRef, (querySnapshot) => {
-      console.log("Fetched documents count:", querySnapshot.size); // Log the number of documents fetched
-
-      this.restaurants = [];  // Clear previous data
+      this.restaurants = [];
 
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
-        console.log("Document data for restaurant:", userData);  // Log the document data
 
-        // Only add restaurants to the list where profileType is 'Restaurant'
         if (userData['profileType'] === 'Restaurant') {
           this.restaurants.push({
             id: doc.id,
@@ -79,35 +74,92 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       });
 
-      console.log("Filtered restaurant data:", this.restaurants);  // Log the filtered restaurants list
-      this.filteredRestaurants = [...this.restaurants];  // Initialize filtered restaurants
+      this.updateDisplayedRestaurants();
     });
   }
 
-  // Trigger the file input for uploading a new profile picture
+  updateDisplayedRestaurants(): void {
+    this.filteredRestaurants = this.restaurants.slice(this.currentIndex, this.currentIndex + 3);
+  }
+
+  rotationInProgress: boolean = false;
+
+  startRestaurantRotation(): void {
+    this.intervalId = setInterval(() => {
+      if (this.searchQuery.trim() === '' && this.restaurants.length > 3 && !this.rotationInProgress) {
+        this.rotationInProgress = true;
+
+        // Add 'exiting' class to current items
+        this.filteredRestaurants.forEach((_, index) => {
+          const item = document.querySelector(`.restaurant-item:nth-child(${index + 1})`);
+          item?.classList.add('exiting');
+        });
+
+        // Wait for the transition to complete before updating the items
+        setTimeout(() => {
+          this.currentIndex = (this.currentIndex + 1) % (this.restaurants.length - 2);
+          this.updateDisplayedRestaurants();
+
+          // Remove 'exiting' class and add 'active' class to new items
+          this.filteredRestaurants.forEach((_, index) => {
+            const item = document.querySelector(`.restaurant-item:nth-child(${index + 1})`);
+            item?.classList.remove('exiting');
+            item?.classList.add('active');
+          });
+
+          this.rotationInProgress = false;
+        }, 600); // Match this to the CSS transition duration
+      }
+    }, 5000);
+  }
+
+  onSearch(): void {
+    if (this.searchQuery.trim()) {
+      // Stop the rotation while searching
+      clearInterval(this.intervalId);
+
+      // Filter restaurants by name only, not address
+      this.filteredRestaurants = this.restaurants.filter(restaurant => {
+        const query = this.searchQuery.toLowerCase();
+        // Only match by name, ignore address or description
+        return restaurant.name.toLowerCase().includes(query);
+      });
+
+      // Log no results if there are no matches (for debugging purposes)
+      if (this.filteredRestaurants.length === 0) {
+        console.log("No restaurants match the search criteria.");
+      }
+    } else {
+      // Resume rotation when search query is cleared
+      this.updateDisplayedRestaurants();
+      this.startRestaurantRotation();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
+    clearInterval(this.intervalId);
+  }
+
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
 
-  // Handle file selection for profile picture
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedFile = input.files[0];
 
-      // Create a temporary URL for preview
       const reader = new FileReader();
       reader.onload = () => {
         this.profilePicture = reader.result as string;
       };
       reader.readAsDataURL(this.selectedFile);
 
-      // Optionally, save the profile picture to Firestore
       this.saveProfilePicture();
     }
   }
 
-  // Save the selected profile picture to Firestore
   async saveProfilePicture(): Promise<void> {
     if (!this.selectedFile) return;
 
@@ -118,7 +170,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     const db = getFirestore();
     const userDocRef = doc(db, 'users', user.uid);
 
-    // Save the Base64 string or a link to Firestore
     const reader = new FileReader();
     reader.onload = async () => {
       try {
@@ -129,22 +180,5 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     };
     reader.readAsDataURL(this.selectedFile);
-  }
-
-  // Unsubscribe from real-time updates when the component is destroyed
-  ngOnDestroy(): void {
-    this.unsubscribe();  // Unsubscribe from real-time updates
-  }
-
-  // Search functionality to filter restaurants based on user input
-  onSearch(): void {
-    if (this.searchQuery.trim()) {
-      this.filteredRestaurants = this.restaurants.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        restaurant.description.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    } else {
-      this.filteredRestaurants = [...this.restaurants]; // If no search query, show all restaurants
-    }
   }
 }
