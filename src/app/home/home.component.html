@@ -1,5 +1,5 @@
 <div class="home-container">
-  <!-- Profile Section -->
+  <!-- Profile Section (Always Visible) -->
   <div class="profile-section">
     <div class="profile-image-container">
       <img [src]="profilePicture || 'https://via.placeholder.com/150'" alt="User Profile" class="profile-image">
@@ -12,6 +12,8 @@
     </p>
   </div>
 
+<!-- Customer View -->
+<div *ngIf="!profileType || profileType === 'Customer'">
   <!-- Search Section -->
   <div class="search-section">
     <h3>Search for Restaurants</h3>
@@ -112,4 +114,7 @@
       </button>
     </div>
   </div>
+</div>
+
+
 </div>

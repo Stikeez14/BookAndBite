@@ -67,7 +67,8 @@ export class AppComponent {
           email: user.email,
           displayName: user.displayName,
           photoURL: user.photoURL,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          profileType: 'Customer'
         };
 
         await setDoc(userDocRef, userData, { merge: true }); // Merge data if document exists

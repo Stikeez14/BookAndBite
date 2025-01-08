@@ -20,8 +20,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   username: string | null = null;
   profilePicture: string | null = null;
   selectedFile: File | null = null;
+  profileType: string | null = null;
 
   restaurants: any[] = [];
+  restaurantBookings: any[] = []; // GRIJA
   filteredRestaurants: any[] = [];
   searchQuery: string = '';
   unsubscribe: () => void = () => {};
@@ -47,19 +49,50 @@ export class HomeComponent implements OnInit, OnDestroy {
           const userData = userDoc.data();
           this.username = userData['username'] || null;
           this.profilePicture = userData['profilePicture'] || null;
+          this.profileType = userData['profileType'] || null;  // Store profileType
         } else {
           console.error('User document does not exist in Firestore.');
         }
 
-        this.fetchRestaurantsRealTime();
+        // Customer-specific logic
+        if (this.profileType === 'Customer') {
+          this.fetchRestaurantsRealTime();
+          this.startRestaurantRotation();
+        }
+
+        // Restaurant-specific logic
+        if (this.profileType === 'Restaurant') {
+          this.fetchBookingsRealTime();
+        }
       } else {
         this.username = null;
         this.profilePicture = null;
       }
     });
-
-    this.startRestaurantRotation();
   }
+
+  // AICI TREBE SA MODIFICAM CA NU E IMPLEMENTATA
+  fetchBookingsRealTime(): void {
+    const db = getFirestore();
+    const bookingsRef = collection(db, 'bookings');
+
+    this.unsubscribe = onSnapshot(bookingsRef, (querySnapshot) => {
+      this.restaurantBookings = [];
+
+      querySnapshot.forEach((doc) => {
+        const bookingData = doc.data();
+        if (bookingData['restaurantId'] === getAuth().currentUser?.uid) {
+          this.restaurantBookings.push({
+            id: doc.id,
+            ...bookingData,
+          });
+        }
+      });
+
+      console.log('Bookings:', this.restaurantBookings);
+    });
+  }
+
 
   fetchRestaurantsRealTime(): void {
     const db = getFirestore();
@@ -71,12 +104,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
 
+        // Only include users with profileType 'Restaurant'
         if (userData['profileType'] === 'Restaurant') {
           this.restaurants.push({
             id: doc.id,
             name: userData['username'],
             description: userData['address'] || 'No description available.',
-            profilePicture: userData['profilePicture'] || 'https://via.placeholder.com/150'
+            profilePicture: userData['profilePicture'] || 'https://via.placeholder.com/150',
           });
         }
       });
