@@ -6,6 +6,7 @@ import { FirebaseService } from '../firebase.service'; // Import FirebaseService
 import { SearchComponent } from '../search/search.component';
 import {FormsModule} from '@angular/forms'; // Import SearchComponent
 import { ReserveTableComponent } from '../reserve-table/reserve-table.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  constructor(private firebaseService: FirebaseService) {
+  constructor(private firebaseService: FirebaseService,private router: Router) {
   }
 
   ngOnInit(): void {
@@ -258,6 +259,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   timeIntervals: { start: string; end: string; available: boolean }[] = [];
   selectedTimeInterval: any = null;
+
+  navigateToRestaurant(restaurantId: string): void {
+    this.router.navigate(['/restaurant', restaurantId]);
+
+  }
 
   // Existing methods...
 
