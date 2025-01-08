@@ -1,0 +1,18 @@
+<div class="reserve-table">
+  <h3>Reserve a Table at {{ restaurantDetails?.name }}</h3>
+  <p>{{ restaurantDetails?.description }}</p>
+  <div>
+    <label for="reservation-date">Select a Date:</label>
+    <input
+      type="date"
+      id="reservation-date"
+      [(ngModel)]="selectedDate"
+      (change)="checkAvailability()"
+    />
+  </div>
+  <div *ngIf="isAvailable !== null">
+    <p *ngIf="isAvailable">The selected date is available!</p>
+    <p *ngIf="!isAvailable">Sorry, the selected date is unavailable.</p>
+  </div>
+  <button [disabled]="!isAvailable" (click)="reserveTable()">Reserve Table</button>
+</div>

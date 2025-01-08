@@ -1,0 +1,14 @@
+.reserve-table {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.reserve-table h3 {
+  margin-top: 0;
+}
+
+.reserve-table input {
+  margin: 8px 0;
+}
