@@ -1,4 +1,47 @@
-<div>
-  HELLO
-</div>
+<div class="restaurant-page-container">
+  <!-- Restaurant Header -->
+  <div class="restaurant-header">
+    <img [src]="restaurant?.profilePicture || 'https://via.placeholder.com/600x200'" alt="Restaurant Banner" class="restaurant-banner">
+    <h1 class="restaurant-name">{{ restaurant?.username || 'Loading...' }}</h1>
+  </div>
 
+  <!-- Restaurant Details -->
+  <div class="restaurant-adres">
+    <h2>Adress</h2>
+    <p>{{ restaurant?.address || 'Details about the restaurant will be displayed here.' }}</p>
+  </div>
+
+  <!-- Menu Section -->
+  <div class="restaurant-menu">
+    <h2>Menu</h2>
+    <ul>
+      <!-- Example placeholder items -->
+      <li *ngIf="!restaurant?.menu">No menu available. Stay tuned!</li>
+      <li *ngFor="let item of restaurant?.menu">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description }}</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="restaurant-reviews">
+    <h2>Customer Reviews</h2>
+    <ul>
+      <!-- Example placeholder reviews -->
+      <li *ngIf="!restaurant?.reviews">No reviews yet. Be the first to leave one!</li>
+      <li *ngFor="let review of restaurant?.reviews">
+        <p><strong>{{ review.username }}</strong>:</p>
+        <blockquote>{{ review.comment }}</blockquote>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Map Section -->
+  <div class="restaurant-map">
+    <h2>Find Us</h2>
+    <div class="map-placeholder">
+      <p *ngIf="!restaurant?.location">Location information is not available.</p>
+    </div>
+  </div>
+</div>
