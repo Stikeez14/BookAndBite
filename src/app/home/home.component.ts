@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
   standalone: true,
   styleUrls: ['./home.component.css'],
 
-  imports: [CommonModule, SearchComponent, FormsModule,ReserveTableComponent] // Add SearchComponent to imports
+  imports: [CommonModule, FormsModule] // Add SearchComponent to imports
 
 })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -22,6 +22,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   profilePicture: string | null = null;
   selectedFile: File | null = null;
   profileType: string | null = null;
+  displayName: string | null = null;
+  photoURL: string | null = null;
 
   restaurants: any[] = [];
   restaurantBookings: any[] = []; // GRIJA
@@ -51,6 +53,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.username = userData['username'] || null;
           this.profilePicture = userData['profilePicture'] || null;
           this.profileType = userData['profileType'] || null;  // Store profileType
+          this.displayName = userData['displayName'] || null;
+          this.photoURL = userData['photoURL'] || null;
         } else {
           console.error('User document does not exist in Firestore.');
         }

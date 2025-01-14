@@ -138,7 +138,7 @@ export class AppComponent {
         const user = userCredential.user;
         console.log('User registered:', user);
 
-        const defaultProfilePicture = 'https://example.com/default-profile-picture.png';
+        const defaultProfilePicture = 'https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg';
 
         const userData: any = {
           email: user.email,
@@ -150,6 +150,10 @@ export class AppComponent {
 
         if (address) {
           userData.address = address; // Add address if profile type is Restaurant
+        }
+
+        if (userData.profileType == 'Restaurant') {
+          userData.profilePicture = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTBkR4TrQ2yBGV92K1tLf85d2o0-wWuxSAMg&s'
         }
 
         // Save user data to Firestore

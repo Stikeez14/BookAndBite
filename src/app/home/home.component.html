@@ -2,11 +2,11 @@
   <!-- Profile Section (Always Visible) -->
   <div class="profile-section">
     <div class="profile-image-container">
-      <img [src]="profilePicture || 'https://via.placeholder.com/150'" alt="User Profile" class="profile-image">
+      <img [src]="profilePicture || photoURL ||'https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg'" alt="User Profile" class="profile-image">
       <button class="change-picture-btn" (click)="triggerFileInput()">Change Picture</button>
       <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput style="display: none;">
     </div>
-    <h2>Welcome, <span class="username">{{ username ? username : 'Guest' }}</span></h2>
+    <h2>Welcome, <span class="username">{{ username || displayName || 'Guest' }}</span></h2>
     <p class="message">
       {{ username ? "We're glad you're here!" : "Please log in to access personalized features." }}
     </p>

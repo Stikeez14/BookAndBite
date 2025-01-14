@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';  // ✅ Import CommonModule
 
 @Component({
   selector: 'app-reserve-table',
@@ -7,7 +8,8 @@ import {FormsModule} from '@angular/forms';
   styleUrls: ['./reserve-table.component.css'],
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    CommonModule  // ✅ Add CommonModule here
   ]
 })
 export class ReserveTableComponent implements OnInit {
